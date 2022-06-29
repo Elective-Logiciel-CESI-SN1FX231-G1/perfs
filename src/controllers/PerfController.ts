@@ -1,6 +1,10 @@
 import { Handler } from 'express'
-
+import shortid from 'shortid'
+import PerfModel from '../models/PerfModel'
 const os = require('os')
+
+const uniqueID = shortid.generate()
+const timeBetweenMeasures = 60000
 
 // Create function to get CPU information
 const cpuAverage = function () {
@@ -31,7 +35,7 @@ const getCpuAverage = async function () {
   const startMeasure = cpuAverage()
 
   const delay = (ms: any) => new Promise(resolve => setTimeout(resolve, ms))
-  await delay(10000)
+  await delay(timeBetweenMeasures)
   // Grab second Measure
   const endMeasure = cpuAverage()
 
@@ -51,14 +55,20 @@ const getPerfs = async function () {
   const usedCpuPercent = await getCpuAverage()
   const usedRam2 = os.totalmem() - os.freemem()
   const usedRam = (usedRam1 + usedRam2) / (2)
+  const dateNow = new Date(Date.now())
+  dateNow.setMilliseconds(0)
+  dateNow.setSeconds(0)
   const perfs = {
     ram: usedRam,
-    cpu: usedCpuPercent
+    cpu: usedCpuPercent,
+    service_id: uniqueID,
+    date: dateNow
   }
-  console.log(perfs)
+  const perfsDB = new PerfModel(perfs)
+  perfsDB.save()
 }
 
-setInterval(getPerfs, 10000)
+setInterval(getPerfs, timeBetweenMeasures)
 
 export const getAll: Handler = async (req, res) => {
   res.sendStatus(200)
