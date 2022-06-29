@@ -71,7 +71,10 @@ const getPerfs = async function () {
 setInterval(getPerfs, timeBetweenMeasures)
 
 export const getAll: Handler = async (req, res) => {
-  res.sendStatus(200)
+  // res.send
+  const perfes = await PerfModel.find()
+  if (!perfes) return res.sendStatus(401)
+  return res.send(perfes)
 }
 
 export default {
