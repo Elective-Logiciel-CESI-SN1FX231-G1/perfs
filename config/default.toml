@@ -1,0 +1,12 @@
+[auth]
+verifyUrl="http://localhost:8080/auth/api/auth/verify"
+
+[http]
+port=44800
+publicUrl="http://localhost:8080/perfs"
+
+[mongo]
+url="mongodb://localhost:27017/perfs-development"
+
+[mqtt]
+url="mqtt://localhost/"
