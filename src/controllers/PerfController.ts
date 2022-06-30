@@ -1,6 +1,7 @@
 import { Handler } from 'express'
+import { FilterQuery } from 'mongoose'
 import shortid from 'shortid'
-import PerfModel from '../models/PerfModel'
+import PerfModel, { IPerf } from '../models/PerfModel'
 const os = require('os')
 
 const uniqueID = shortid.generate()
@@ -71,10 +72,15 @@ const getPerfs = async function () {
 setInterval(getPerfs, timeBetweenMeasures)
 
 export const getAll: Handler = async (req, res) => {
-  // res.send
-  const perfes = await PerfModel.find()
-  if (!perfes) return res.sendStatus(401)
-  return res.send(perfes)
+  const query :FilterQuery<IPerf> = {}
+  const [results, count] = await Promise.all([
+    PerfModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
+    PerfModel.countDocuments(query).exec()
+  ])
+  res.send({
+    count,
+    results
+  })
 }
 
 export default {
