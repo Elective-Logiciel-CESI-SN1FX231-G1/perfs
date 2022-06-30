@@ -12,6 +12,8 @@ const PerfRouter = express.Router()
  * @apiQuery {Number} size=10 Number of elements per page.
  * @apiQuery {Number} skip=0 Number of elements to skip.
  * @apiQuery {Number} page=1 The page to get.
+ * @apiQuery {Date} from Starting date.
+ * @apiQuery {Date} to End date.
  *
  * @apiSuccess {Number} count Number of products returned.
  * @apiSuccess {Array} results Array of products.

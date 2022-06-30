@@ -73,6 +73,8 @@ setInterval(getPerfs, timeBetweenMeasures)
 
 export const getAll: Handler = async (req, res) => {
   const query :FilterQuery<IPerf> = {}
+  if (req.query.from) query.date = Object.assign(query.date || {}, { $gte: Date.parse(String(req.query.from)) })
+  if (req.query.to) query.date = Object.assign(query.date || {}, { $lt: Date.parse(String(req.query.to)) })
   const [results, count] = await Promise.all([
     PerfModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
     PerfModel.countDocuments(query).exec()
